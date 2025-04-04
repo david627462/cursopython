@@ -1,23 +1,19 @@
+import sqlite3
 from typing import Union
-
 from fastapi import FastAPI
 
 app = FastAPI()
 
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
 @app.put("/subtrair_estoque")
-def subtrair(x:int):
-               
-    return {"gosto": "jogar"}
-          
+def subtrair(id:int, quant: int):
+    try:
+        con = sqlite3.connect("/Users/POSITIVO/hackers/database/mercado.db")
+        cur = con.cursor()
+        cur.execute(""" update produtos set quantidade = quantidade - ? where id=? """, (quant, id) )
+        con.commit()
+        con.close()             
+        return {True}
+    except:
+        return {False} 
 
      
